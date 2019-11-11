@@ -112,7 +112,7 @@ class Pack:
                 tmp_dic[dept][flag].add(course)
 
             for dept, courses in tmp_dic.items():
-                print(dept)
+                
                 new_major = Majors(dept)
                 
                 for flag, course in courses.items():
@@ -156,17 +156,17 @@ class Pack:
         pretty = PrettyTable(field_names = ['CWID', 'Name', 'Major','Completed Courses','Remaining Required','Remaining Electives'])
         print(f"Students")
         for student in self.studentInfo.values():
-            test = student.prettyTableStudent()
-            completedCourses = set([Course for Course, grade in test[3].items() if grade in PassGrades])
-            test[3] = sorted(completedCourses)
-            remain_require = self.majorsData[test[2]].req.difference(test[3])
-            if len(self.majorsData[test[2]].elec.intersection(test[3]))>0:
+            temp = student.prettyTableStudent()
+            completedCourses = set([Course for Course, grade in temp[3].items() if grade in PassGrades])
+            temp[3] = sorted(completedCourses)
+            remain_require = self.majorsData[temp[2]].req.difference(temp[3])
+            if len(self.majorsData[temp[2]].elec.intersection(temp[3]))>0:
                 remain_elective = None
             else:
-                remain_elective = self.majorsData[test[2]].elec - completedCourses
-            test.append(remain_require)
-            test.append(remain_elective)
-            pretty.add_row(test)
+                remain_elective = self.majorsData[temp[2]].elec - completedCourses
+            temp.append(remain_require)
+            temp.append(remain_elective)
+            pretty.add_row(temp)
             
         
         print(pretty)
@@ -185,10 +185,11 @@ class Pack:
         print(Pretty)
 
     def major_summary(self):
-        
+        """Printing Pretty table of majors info"""
         table = PrettyTable(field_names = ['Dept', 'Required', 'Elective'])
         for dept, major in self.majorsData.items():
             table.add_row([dept, major.req, major.elec])
+        print(f"Majors")
         print(table)
 
 def main():
