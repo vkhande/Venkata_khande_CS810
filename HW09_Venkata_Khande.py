@@ -101,8 +101,12 @@ class Pack:
             for studentCWID, course, grade, instructorCWID in  self.file_reading_gen(filePathGrades, 4, "|", True):
                 if studentCWID in self.studentInfo.keys():
                     self.studentInfo[studentCWID].addCourseGrade(course, grade)
+                else:
+                    print(f"Grade not found for student with {studentCWID}")
                 if instructorCWID in self.insructorsInfo.keys():
-                    self.insructorsInfo[instructorCWID].add_course_noofstudents(course) 
+                    self.insructorsInfo[instructorCWID].add_course_noofstudents(course)
+                else:
+                    print(f"Grade not found for Instructor with {instructorCWID}") 
         else:
             print(f"Can't open {gradesFile}")
 
@@ -158,12 +162,17 @@ class Pack:
         for student in self.studentInfo.values():
             temp = student.prettyTableStudent()
             completedCourses = set([Course for Course, grade in temp[3].items() if grade in PassGrades])
-            temp[3] = sorted(completedCourses)
-            remain_require = self.majorsData[temp[2]].req.difference(temp[3])
-            if len(self.majorsData[temp[2]].elec.intersection(temp[3]))>0:
-                remain_elective = None
+            if temp[2] in self.majorsData:
+                temp[3] = sorted(completedCourses)
+                remain_require = self.majorsData[temp[2]].req.difference(temp[3])
+                if len(self.majorsData[temp[2]].elec.intersection(temp[3]))>0:
+                    remain_elective = None
+                else:
+                    remain_elective = self.majorsData[temp[2]].elec - completedCourses
             else:
-                remain_elective = self.majorsData[temp[2]].elec - completedCourses
+                temp[3] = sorted(completedCourses)
+                remain_elective, remain_require = None, None
+                print(f"Major cannot be found {temp[2]} for student {temp[0]}")
             temp.append(remain_require)
             temp.append(remain_elective)
             pretty.add_row(temp)
