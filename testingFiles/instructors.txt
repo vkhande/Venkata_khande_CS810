@@ -1,3 +1,2 @@
-CWID|Instructor|Dept
-98765|Einstein, A|SFEN
-98764|Feynman, R|SFEN
+CWID	Name	Dept
+98764	Cohen, R	SFEN

@@ -65,6 +65,7 @@ class Pack:
         self.studentsSummary()
         self.instructor_summary()
         self.major_summary()
+        self.instructor_table_db("C:/Users/princ/Downloads/810_startup.db")
 
     def analyzeFiles(self):
         """Analyse the files for getting the student, Instrctor, and grades data from the text file."""
@@ -85,21 +86,21 @@ class Pack:
         
         if studentsFile in os.listdir(self.FilePath):
             
-            for CWID, Name, Major in self.file_reading_gen(pathJoinStudent, 3, ";", True): 
+            for CWID, Name, Major in self.file_reading_gen(pathJoinStudent, 3, "\t", True): 
                 self.studentInfo[CWID]=Student(CWID, Name, Major)
         else:
             print(f"Can not open {studentsFile}")
         
         if instructorsFile in os.listdir(self.FilePath):
             
-            for CWID, Name, Dept in self.file_reading_gen(pathJoinInstructor, 3, "|", True): 
+            for CWID, Name, Dept in self.file_reading_gen(pathJoinInstructor, 3, "\t", True): 
                 self.insructorsInfo[CWID]=Instructor(CWID, Name, Dept)
         else:
             print(f"Can not open {instructorsFile}")
 
         if gradesFile in os.listdir(self.FilePath):
             
-            for studentCWID, course, grade, instructorCWID in  self.file_reading_gen(filePathGrades, 4, "|", True):
+            for studentCWID, course, grade, instructorCWID in  self.file_reading_gen(filePathGrades, 4, "\t", True):
                 if studentCWID in self.studentInfo.keys():
                     self.studentInfo[studentCWID].addCourseGrade(course, grade)
                 else:
@@ -212,20 +213,20 @@ class Pack:
                 grades G  on I.CWID = G.InstructorCWID GROUP BY G.InstructorCWID,G.Course order by  CWID desc;"""
 
 
-            pt = PrettyTable(field_names = ['CWID', 'Name', 'Dept', 'Course', 'Students'])
+            prettytable = PrettyTable(field_names = ['CWID', 'Name', 'Dept', 'Course', 'Students'])
             
             try:
-                db_list =[]
+                database_data =[]
                 print(f"\nInstructor Summary From DataBase")
                 for row in db.execute(query):
-                    pt.add_row(list(row))
-                    db_list.append(list(row))
-                print(pt)
+                    prettytable.add_row(list(row))
+                    database_data.append(list(row))
+                print(prettytable)
             except Exception as e:
                 print(e)
             else:
                 pass
-                return db_list
+                return database_data
 
 def main():
     try:
