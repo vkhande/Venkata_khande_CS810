@@ -1,2 +1,0 @@
-StudentCWID	Course	Grade	InstructorCWID
-10103	SSW 810	A-	98763
